@@ -7,14 +7,18 @@
 //
 
 #import "KDNRouteViewController.h"
+#import "KDNConstants.h"
 @import GoogleMaps;
 
 @interface KDNRouteViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *fromTextField;
 @property (weak, nonatomic) IBOutlet UITextField *toTextField;
 @property (weak, nonatomic) IBOutlet UISwitch *scenicPathSwitch;
+@property (weak, nonatomic) IBOutlet UIButton *searchButton;
+@property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 
 @property (strong, nonatomic) KDNSearchResultsTableViewController* searchResultsTableViewController;
+@property (nonatomic) BOOL shouldFindScenicPath;
 
 @end
 
@@ -29,6 +33,12 @@
     
     self.searchResultsTableViewController = [[KDNSearchResultsTableViewController alloc] init];
     self.searchResultsTableViewController.delegate = self;
+    
+    
+    [self updateScenicPathSelection];
+    
+    self.fromLocation = [[KDNLocationInfo alloc] initWithLatitude:0.0 longitude:0.0 title:@""];
+    self.toLocation = [[KDNLocationInfo alloc] initWithLatitude:0.0 longitude:0.0 title:@""];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -101,7 +111,9 @@
                                 }
                                 
                                 NSMutableArray* searchResults = [[NSMutableArray alloc] init];
-                                NSLog(@"Results %@", results);
+                                
+                                //add this search text to suggestion: e.g. search by lat long
+                                [searchResults addObject:searchText];
                                 
                                 for (GMSAutocompletePrediction* result in results) {
                                     [searchResults addObject:result.attributedFullText.string];
@@ -110,5 +122,24 @@
                                 [self.searchResultsTableViewController reloadDataWithArray:searchResults];
                             }];
 }
+- (IBAction)searchButtonClicked:(id)sender {
+}
+- (IBAction)cancelButtonClicked:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+- (IBAction)scenicPathSwitchChanged:(id)sender {
+    [self updateScenicPathSelection];
+}
+
+-(void)updateScenicPathSelection {
+    self.shouldFindScenicPath = self.scenicPathSwitch.on;
+    
+    if (self.shouldFindScenicPath) {
+        [self.searchButton setTitle:kSearchButtonWithScenicPath forState:UIControlStateNormal];
+    } else {
+        [self.searchButton setTitle:kSearchButtonWithoutScenicPath forState:UIControlStateNormal];
+    }
+}
+
 
 @end

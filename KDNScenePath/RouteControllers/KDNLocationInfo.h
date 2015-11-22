@@ -14,4 +14,6 @@
 @property (nonatomic) double latitude;
 @property (nonatomic) double longitude;
 
+-(id)initWithLatitude:(double)lat longitude:(double)lng title:(NSString*)title;
+
 @end

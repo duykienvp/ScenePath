@@ -10,4 +10,6 @@
 
 @interface KDNConstants : NSObject
 extern NSString * const kSearchResultTableViewCellIdentifier;
+extern NSString * const kSearchButtonWithoutScenicPath;
+extern NSString * const kSearchButtonWithScenicPath;
 @end

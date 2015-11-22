@@ -11,5 +11,7 @@
 @implementation KDNConstants
 
 NSString * const kSearchResultTableViewCellIdentifier = @"SearchResultTableViewCellIdentifier";
+NSString * const kSearchButtonWithoutScenicPath = @"Search shortest";
+NSString * const kSearchButtonWithScenicPath = @"Search nicest";
 
 @end

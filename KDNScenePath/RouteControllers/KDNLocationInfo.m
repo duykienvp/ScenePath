@@ -10,4 +10,14 @@
 
 @implementation KDNLocationInfo
 
+-(id)initWithLatitude:(double)lat longitude:(double)lng title:(NSString *)title {
+    self = [super init];
+    if (self) {
+        self.latitude = lat;
+        self.longitude = lng;
+        self.title = title;
+    }
+    return self;
+}
+
 @end
