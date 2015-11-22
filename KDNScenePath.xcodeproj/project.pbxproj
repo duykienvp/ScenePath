@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		38EC114B49160F05F5B9528A /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B0FF8A345C152EE169147806 /* libPods.a */; };
 		4BDBF5911C01315300DA6DA9 /* GoogleMapsUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BDBF5901C01315300DA6DA9 /* GoogleMapsUtility.m */; };
+		4BDBF5931C01358700DA6DA9 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BDBF5921C01358700DA6DA9 /* CoreLocation.framework */; };
 		4BFD498B1C0127D400D2331A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFD498A1C0127D400D2331A /* main.m */; };
 		4BFD498E1C0127D400D2331A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFD498D1C0127D400D2331A /* AppDelegate.m */; };
 		4BFD49911C0127D400D2331A /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFD49901C0127D400D2331A /* MainViewController.m */; };
@@ -39,6 +40,7 @@
 /* Begin PBXFileReference section */
 		4BDBF58F1C0130EA00DA6DA9 /* GoogleMapsUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GoogleMapsUtility.h; path = Utility/GoogleMaps/GoogleMapsUtility.h; sourceTree = "<group>"; };
 		4BDBF5901C01315300DA6DA9 /* GoogleMapsUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GoogleMapsUtility.m; path = Utility/GoogleMaps/GoogleMapsUtility.m; sourceTree = "<group>"; };
+		4BDBF5921C01358700DA6DA9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		4BFD49861C0127D400D2331A /* KDNScenePath.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KDNScenePath.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BFD498A1C0127D400D2331A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4BFD498C1C0127D400D2331A /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4BDBF5931C01358700DA6DA9 /* CoreLocation.framework in Frameworks */,
 				38EC114B49160F05F5B9528A /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -171,6 +174,7 @@
 		555B305464520C6210AEB04E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4BDBF5921C01358700DA6DA9 /* CoreLocation.framework */,
 				B0FF8A345C152EE169147806 /* libPods.a */,
 			);
 			name = Frameworks;
@@ -518,6 +522,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.duykien.KDNScenePath;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -532,6 +537,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.duykien.KDNScenePath;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
