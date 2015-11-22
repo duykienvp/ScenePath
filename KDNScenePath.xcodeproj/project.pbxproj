@@ -10,6 +10,8 @@
 		38EC114B49160F05F5B9528A /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B0FF8A345C152EE169147806 /* libPods.a */; };
 		4B0E50071C014E5100414D7D /* KDNSearchResultsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E50061C014E5100414D7D /* KDNSearchResultsTableViewController.m */; };
 		4B0E500A1C014F2800414D7D /* KDNConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E50091C014F2800414D7D /* KDNConstants.m */; };
+		4B0E50111C01B20C00414D7D /* KDNRouteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E50101C01B20C00414D7D /* KDNRouteViewController.m */; };
+		4B0E50141C01B91B00414D7D /* KDNLocationInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E50131C01B91B00414D7D /* KDNLocationInfo.m */; };
 		4BDBF5911C01315300DA6DA9 /* KDNGoogleMapsUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BDBF5901C01315300DA6DA9 /* KDNGoogleMapsUtility.m */; };
 		4BDBF5931C01358700DA6DA9 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BDBF5921C01358700DA6DA9 /* CoreLocation.framework */; };
 		4BFD498B1C0127D400D2331A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFD498A1C0127D400D2331A /* main.m */; };
@@ -44,6 +46,10 @@
 		4B0E50061C014E5100414D7D /* KDNSearchResultsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KDNSearchResultsTableViewController.m; path = SearchPlaces/KDNSearchResultsTableViewController.m; sourceTree = "<group>"; };
 		4B0E50081C014F2800414D7D /* KDNConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KDNConstants.h; path = Utility/KDNConstants.h; sourceTree = "<group>"; };
 		4B0E50091C014F2800414D7D /* KDNConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KDNConstants.m; path = Utility/KDNConstants.m; sourceTree = "<group>"; };
+		4B0E500F1C01B20C00414D7D /* KDNRouteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KDNRouteViewController.h; path = RouteControllers/KDNRouteViewController.h; sourceTree = "<group>"; };
+		4B0E50101C01B20C00414D7D /* KDNRouteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KDNRouteViewController.m; path = RouteControllers/KDNRouteViewController.m; sourceTree = "<group>"; };
+		4B0E50121C01B91B00414D7D /* KDNLocationInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KDNLocationInfo.h; path = RouteControllers/KDNLocationInfo.h; sourceTree = "<group>"; };
+		4B0E50131C01B91B00414D7D /* KDNLocationInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KDNLocationInfo.m; path = RouteControllers/KDNLocationInfo.m; sourceTree = "<group>"; };
 		4BDBF58F1C0130EA00DA6DA9 /* KDNGoogleMapsUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KDNGoogleMapsUtility.h; path = Utility/GoogleMaps/KDNGoogleMapsUtility.h; sourceTree = "<group>"; };
 		4BDBF5901C01315300DA6DA9 /* KDNGoogleMapsUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KDNGoogleMapsUtility.m; path = Utility/GoogleMaps/KDNGoogleMapsUtility.m; sourceTree = "<group>"; };
 		4BDBF5921C01358700DA6DA9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -104,6 +110,17 @@
 			name = SearchPlaces;
 			sourceTree = "<group>";
 		};
+		4B0E500E1C01B1E000414D7D /* RouteControllers */ = {
+			isa = PBXGroup;
+			children = (
+				4B0E500F1C01B20C00414D7D /* KDNRouteViewController.h */,
+				4B0E50101C01B20C00414D7D /* KDNRouteViewController.m */,
+				4B0E50121C01B91B00414D7D /* KDNLocationInfo.h */,
+				4B0E50131C01B91B00414D7D /* KDNLocationInfo.m */,
+			);
+			name = RouteControllers;
+			sourceTree = "<group>";
+		};
 		4BDBF58D1C01308600DA6DA9 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
@@ -148,6 +165,7 @@
 		4BFD49881C0127D400D2331A /* KDNScenePath */ = {
 			isa = PBXGroup;
 			children = (
+				4B0E500E1C01B1E000414D7D /* RouteControllers */,
 				4B0E50031C014DFE00414D7D /* SearchPlaces */,
 				4BDBF58D1C01308600DA6DA9 /* Utility */,
 				4BFD498C1C0127D400D2331A /* AppDelegate.h */,
@@ -394,6 +412,8 @@
 				4BFD49911C0127D400D2331A /* MainViewController.m in Sources */,
 				4BFD498E1C0127D400D2331A /* AppDelegate.m in Sources */,
 				4BFD498B1C0127D400D2331A /* main.m in Sources */,
+				4B0E50111C01B20C00414D7D /* KDNRouteViewController.m in Sources */,
+				4B0E50141C01B91B00414D7D /* KDNLocationInfo.m in Sources */,
 				4B0E500A1C014F2800414D7D /* KDNConstants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

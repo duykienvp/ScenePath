@@ -8,9 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
-#import "KDNSearchResultsTableViewController.h"
 
-@interface MainViewController : UIViewController <CLLocationManagerDelegate, KDNMapsLocator>
+@interface MainViewController : UIViewController <CLLocationManagerDelegate>
 
 @end
 

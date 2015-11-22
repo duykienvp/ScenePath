@@ -18,15 +18,13 @@
     __weak IBOutlet GMSMapView *mapView;
     BOOL hasCurrentLocation;
     
-    KDNSearchResultsTableViewController* searchResultsTableViewController;
+    
     __weak IBOutlet UIButton *routeButton;
     __weak IBOutlet UIButton *cameraButton;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    searchResultsTableViewController = [[KDNSearchResultsTableViewController alloc] init];
-    searchResultsTableViewController.delegate = self;
     
     hasCurrentLocation = NO;
     
@@ -64,9 +62,5 @@
         hasCurrentLocation = YES;
         [self.view bringSubviewToFront:routeButton];
     }
-}
-
--(void)locateWithLatitude:(double)lat andLongitude:(double)lng andTitle:(NSString *)title {
-    
 }
 @end
