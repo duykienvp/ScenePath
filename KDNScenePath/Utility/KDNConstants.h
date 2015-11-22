@@ -1,5 +1,5 @@
 //
-//  GoogleMapsUtility.m
+//  Constants.h
 //  KDNScenePath
 //
 //  Created by Kien Nguyen Duy on 11/21/15.
@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GoogleMapsUtility.h"
-NSString * const GoogleMapsApiKey = @"AIzaSyD5I5TZ4q-NQBPJudfODoyKE7_1iVM3rOs";
 
+@interface KDNConstants : NSObject
+extern NSString * const kSearchResultTableViewCellIdentifier;
+@end
