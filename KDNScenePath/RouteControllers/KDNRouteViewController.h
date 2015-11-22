@@ -7,8 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "KDNLocationInfo.h"
 #import "KDNSearchResultsTableViewController.h"
 
 @interface KDNRouteViewController : UIViewController <KDNMapsLocator, UISearchBarDelegate>
+
+@property (strong, nonatomic) KDNLocationInfo* fromLocation;
+@property (strong, nonatomic) KDNLocationInfo* toLocation;
 
 @end

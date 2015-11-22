@@ -10,13 +10,16 @@
 
 @protocol KDNMapsLocator <NSObject>
 
--(void)locateWithLatitude:(double)lat andLongitude:(double)lng andTitle:(NSString*)title;
+-(void)setFromLocationWithLatitude:(double)lat andLongitude:(double)lng andTitle:(NSString*)title;
+-(void)setToLocationWithLatitude:(double)lat andLongitude:(double)lng andTitle:(NSString*)title;
 
 @end
 
 @interface KDNSearchResultsTableViewController : UITableViewController <UITableViewDelegate, UITableViewDataSource>
 
-@property (strong, nonatomic) NSArray * searchResults;
 @property (weak) id <KDNMapsLocator> delegate;
+@property (nonatomic) BOOL isFromLocation;
+
+-(void)reloadDataWithArray:(NSArray*)array;
 
 @end

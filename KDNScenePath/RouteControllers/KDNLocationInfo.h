@@ -10,4 +10,8 @@
 
 @interface KDNLocationInfo : NSObject
 
+@property (strong, nonatomic) NSString* title;
+@property (nonatomic) double latitude;
+@property (nonatomic) double longitude;
+
 @end

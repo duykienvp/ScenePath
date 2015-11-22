@@ -9,11 +9,17 @@
 #import "KDNSearchResultsTableViewController.h"
 #import "KDNConstants.h"
 #import "KDNGoogleMapsUtility.h"
+#import "KDNLocationInfo.h"
+
+@interface KDNSearchResultsTableViewController()
+@property (strong, nonatomic) NSArray * searchResults;
+
+@end
 
 @implementation KDNSearchResultsTableViewController
 
 -(void)viewDidLoad {
-    self.searchResults = [[NSMutableArray alloc] init];
+    self.searchResults = [[NSArray alloc] init];
     [self.tableView registerClass:UITableViewCell.self forCellReuseIdentifier:kSearchResultTableViewCellIdentifier];
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
@@ -41,7 +47,23 @@
         @try {
             if (data != nil) {
                 NSDictionary* dict = (NSDictionary*)[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
-                NSLog(@"Results: %@", dict);
+                NSLog(@"Dict: %@", dict);
+                NSArray* results = [dict objectForKey:@"results"];
+                NSDictionary* result = [results firstObject];
+                if (result != nil) {
+                    
+                    //parse result
+                    NSString* title = [result objectForKey:@"formatted_address"];
+                    double latitude = [[[[result objectForKey:@"geometry"] objectForKey:@"location"] objectForKey:@"lat"] doubleValue];
+                    double longitude = [[[[result objectForKey:@"geometry"] objectForKey:@"location"] objectForKey:@"lng"] doubleValue];
+                    
+                    //set appropriate location
+                    if (self.isFromLocation) {
+                        [self.delegate setFromLocationWithLatitude:latitude andLongitude:longitude andTitle:title];
+                    } else {
+                        [self.delegate setToLocationWithLatitude:latitude andLongitude:longitude andTitle:title];
+                    }
+                }
             }
         }
         @catch (NSException *exception) {
