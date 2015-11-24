@@ -47,7 +47,7 @@
         @try {
             if (data != nil) {
                 NSDictionary* dict = (NSDictionary*)[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
-                NSLog(@"Dict: %@", dict);
+//                NSLog(@"Dict: %@", dict);
                 NSArray* results = [dict objectForKey:@"results"];
                 NSDictionary* result = [results firstObject];
                 if (result != nil) {
