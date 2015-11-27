@@ -124,12 +124,11 @@
                 NSLog(@"Dict: %@", dict);
                 NSString* status = dict[@"status"];
                 if ([status isEqualToString:@"OK"]) {
-                    GMSPath *path =[GMSPath pathFromEncodedPath:dict[@"routes"][0][@"overview_polyline"][@"points"]];
-                    GMSPolyline *singleLine = [GMSPolyline polylineWithPath:path];
-                    singleLine.strokeWidth = 7;
-                    singleLine.strokeColor = [UIColor greenColor];
-                    
                     dispatch_async(dispatch_get_main_queue(),^{
+                        GMSPath *path =[GMSPath pathFromEncodedPath:dict[@"routes"][0][@"overview_polyline"][@"points"]];
+                        GMSPolyline *singleLine = [GMSPolyline polylineWithPath:path];
+                        singleLine.strokeWidth = 5;
+                        singleLine.strokeColor = [UIColor blueColor];
                         singleLine.map = mapView;
                     });
                 } else {
