@@ -126,6 +126,9 @@
                 NSString* status = dict[@"status"];
                 if ([status isEqualToString:@"OK"]) {
                     dispatch_async(dispatch_get_main_queue(),^{
+                        //clear the old map
+                        [mapView clear];
+                        
                         //update path
                         GMSPath *path =[GMSPath pathFromEncodedPath:dict[@"routes"][0][@"overview_polyline"][@"points"]];
                         GMSPolyline *singleLine = [GMSPolyline polylineWithPath:path];
