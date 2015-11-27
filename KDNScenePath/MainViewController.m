@@ -116,6 +116,7 @@
                            self.toLocation.longitude,
                            kGoogleMapsApiServerKey];
     NSURL *directionsURL = [NSURL URLWithString:urlString];
+    __weak MainViewController* weakSelf = self;
     
     [[[NSURLSession sharedSession] dataTaskWithURL:directionsURL completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         @try {
@@ -125,11 +126,44 @@
                 NSString* status = dict[@"status"];
                 if ([status isEqualToString:@"OK"]) {
                     dispatch_async(dispatch_get_main_queue(),^{
+                        //update path
                         GMSPath *path =[GMSPath pathFromEncodedPath:dict[@"routes"][0][@"overview_polyline"][@"points"]];
                         GMSPolyline *singleLine = [GMSPolyline polylineWithPath:path];
                         singleLine.strokeWidth = 5;
                         singleLine.strokeColor = [UIColor blueColor];
                         singleLine.map = mapView;
+                        
+                        //update markers at start/end positions
+                        CLLocationCoordinate2D fromPosition = CLLocationCoordinate2DMake(weakSelf.fromLocation.latitude, weakSelf.fromLocation.longitude);
+                        GMSMarker *fromMarker = [GMSMarker markerWithPosition:fromPosition];
+                        fromMarker.title = weakSelf.fromLocation.title;
+                        fromMarker.map = mapView;
+                        
+                        CLLocationCoordinate2D toPosition = CLLocationCoordinate2DMake(weakSelf.toLocation.latitude, weakSelf.toLocation.longitude);
+                        GMSMarker *toMarker = [GMSMarker markerWithPosition:toPosition];
+                        toMarker.title = weakSelf.toLocation.title;
+                        toMarker.map = mapView;
+                        
+                        //find max/min lat/long for camera bounds
+                        double maxLat = -DBL_MAX;
+                        double minLat = DBL_MAX;
+                        double maxLong = -DBL_MAX;
+                        double minLong = DBL_MAX;
+                        for (int i = 0; i < path.count; i++) {
+                            double aLat = [path coordinateAtIndex:i].latitude;
+                            double aLong = [path coordinateAtIndex:i].longitude;
+                            
+                            maxLat = maxLat < aLat ? aLat : maxLat;
+                            minLat = aLat < minLat ? aLat : minLat;
+                            
+                            maxLong = maxLong < aLong ? aLong : maxLong;
+                            minLong = aLong < minLong ? aLong : minLong;
+                        }
+                        
+                        //update map bounds
+                        GMSCoordinateBounds* bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:CLLocationCoordinate2DMake(maxLat, maxLong)
+                                                                                           coordinate:CLLocationCoordinate2DMake(minLat, minLong)];
+                        [mapView animateWithCameraUpdate:[GMSCameraUpdate fitBounds:bounds]];
                     });
                 } else {
                     NSLog(@"Error getting route: status = %@", status);
