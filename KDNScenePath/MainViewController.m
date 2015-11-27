@@ -106,6 +106,7 @@
 }
 
 -(void)routeGoogleMaps {
+    NSLog(@"Find route from %@ to %@", [self.fromLocation description], [self.toLocation description]);
     NSString *urlString = [NSString stringWithFormat:
                            @"%@?origin=%f,%f&destination=%f,%f&sensor=true&key=%@",
                            @"https://maps.googleapis.com/maps/api/directions/json",

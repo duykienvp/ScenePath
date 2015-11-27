@@ -32,8 +32,8 @@ NSString* const kTitleCodingKey = @"kTitleCodingKey";
 
 -(id)initWithCoder:(NSCoder *)aDecoder{
     if(self = [super init]){
-        self.latitude = [[aDecoder decodeObjectForKey:kLatitudeCodingKey] doubleValue];
-        self.longitude = [[aDecoder decodeObjectForKey:kLongitudeCodingKey] doubleValue];
+        self.latitude = [aDecoder decodeDoubleForKey:kLatitudeCodingKey];
+        self.longitude = [aDecoder decodeDoubleForKey:kLongitudeCodingKey];
         self.title = [aDecoder decodeObjectForKey:kTitleCodingKey];
     }
     return self;

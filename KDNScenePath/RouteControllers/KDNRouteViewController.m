@@ -58,6 +58,9 @@
         self.toLocation = [[KDNLocationInfo alloc] initWithLatitude:kAutocompleteBoundBottomRightLatitude longitude:kAutocompleteBoundBottomRightLongitude title:kEmptyString];
     }
     
+    NSLog(@"Load fromLocation: %@", [self.fromLocation description]);
+    NSLog(@"Load toLocation: %@", [self.toLocation description]);
+    
     [self setTextFieldInitialValues];
 }
 
@@ -102,6 +105,7 @@
     if ([KDNPreferenceManager getShouldSavePreviousSearch]) {
         [KDNPreferenceManager setPreviousFromLocation:self.fromLocation];
     }
+    NSLog(@"Select fromLocation: %@", [self.fromLocation description]);
     
     //update UI
     dispatch_async(dispatch_get_main_queue(),^{
@@ -117,6 +121,8 @@
     if ([KDNPreferenceManager getShouldSavePreviousSearch]) {
         [KDNPreferenceManager setPreviousToLocation:self.toLocation];
     }
+    
+    NSLog(@"Select toLocation: %@", [self.toLocation description]);
     
     //update UI
     dispatch_async(dispatch_get_main_queue(),^{
