@@ -10,8 +10,15 @@
 
 @implementation KDNConstants
 
+NSString * const kEmptyString = @"";
+
 NSString * const kSearchResultTableViewCellIdentifier = @"SearchResultTableViewCellIdentifier";
 NSString * const kSearchButtonWithoutScenicPath = @"Search shortest";
 NSString * const kSearchButtonWithScenicPath = @"Search nicest";
+
+double const kAutocompleteBoundTopLeftLatitude = 34.316540;
+double const kAutocompleteBoundTopLeftLongitude = -118.612350;
+double const kAutocompleteBoundBottomRightLatitude = 33.448647;
+double const kAutocompleteBoundBottomRightLongitude = -116.621358;
 
 @end

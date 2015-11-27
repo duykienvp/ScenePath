@@ -8,17 +8,21 @@
 
 #import "KDNRouteViewController.h"
 #import "KDNConstants.h"
+#import "KDNPreferenceManager.h"
 @import GoogleMaps;
 
 @interface KDNRouteViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *fromTextField;
 @property (weak, nonatomic) IBOutlet UITextField *toTextField;
 @property (weak, nonatomic) IBOutlet UISwitch *scenicPathSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *savePreviousSearchSwitch;
 @property (weak, nonatomic) IBOutlet UIButton *searchButton;
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 
 @property (strong, nonatomic) KDNSearchResultsTableViewController* searchResultsTableViewController;
-@property (nonatomic) BOOL shouldFindScenicPath;
+
+@property (strong, nonatomic) KDNLocationInfo* fromLocation;
+@property (strong, nonatomic) KDNLocationInfo* toLocation;
 
 @end
 
@@ -26,6 +30,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    NSLog(@"LOAD");
     // Do any additional setup after loading the view.
     
     [self.fromTextField addTarget:self action:@selector(fromTextFieldClicked) forControlEvents:UIControlEventEditingDidBegin];
@@ -34,11 +39,33 @@
     self.searchResultsTableViewController = [[KDNSearchResultsTableViewController alloc] init];
     self.searchResultsTableViewController.delegate = self;
     
-    
+    [self.scenicPathSwitch setOn:[KDNPreferenceManager getScenicOption] animated:NO];
     [self updateScenicPathSelection];
     
-    self.fromLocation = [[KDNLocationInfo alloc] initWithLatitude:0.0 longitude:0.0 title:@""];
-    self.toLocation = [[KDNLocationInfo alloc] initWithLatitude:0.0 longitude:0.0 title:@""];
+    if ([KDNPreferenceManager getShouldSavePreviousSearch]) {
+        //get info from preference
+        [self.savePreviousSearchSwitch setOn:YES animated:NO];
+        self.fromLocation = [KDNPreferenceManager getPreviousFromLocation];
+        self.toLocation = [KDNPreferenceManager getPreviousToLocation];
+    } else {
+        //not save previous search
+        [self.savePreviousSearchSwitch setOn:NO animated:NO];
+    }
+    
+    //initialize if there is no previous location info
+    if (self.fromLocation == nil || self.toLocation == nil) {
+        self.fromLocation = [[KDNLocationInfo alloc] initWithLatitude:kAutocompleteBoundTopLeftLatitude longitude:kAutocompleteBoundTopLeftLongitude title:kEmptyString];
+        self.toLocation = [[KDNLocationInfo alloc] initWithLatitude:kAutocompleteBoundBottomRightLatitude longitude:kAutocompleteBoundBottomRightLongitude title:kEmptyString];
+    }
+    
+    [self setTextFieldInitialValues];
+}
+
+-(void)setTextFieldInitialValues {
+    if ([KDNPreferenceManager getShouldSavePreviousSearch]) {
+        [self.fromTextField setText:self.fromLocation.title];
+        [self.toTextField setText:self.toLocation.title];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -71,6 +98,12 @@
     self.fromLocation.longitude = lng;
     self.fromLocation.title = title;
     
+    //save to preference
+    if ([KDNPreferenceManager getShouldSavePreviousSearch]) {
+        [KDNPreferenceManager setPreviousFromLocation:self.fromLocation];
+    }
+    
+    //update UI
     dispatch_async(dispatch_get_main_queue(),^{
         self.fromTextField.text = title;
     });
@@ -80,7 +113,12 @@
     self.toLocation.longitude = lng;
     self.toLocation.title = title;
     
+    //save to preference
+    if ([KDNPreferenceManager getShouldSavePreviousSearch]) {
+        [KDNPreferenceManager setPreviousToLocation:self.toLocation];
+    }
     
+    //update UI
     dispatch_async(dispatch_get_main_queue(),^{
         self.toTextField.text = title;
     });
@@ -94,10 +132,12 @@
 }
 
 -(void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    //Get auto-complete from Google Places API when text is changed
     GMSPlacesClient* placesClient = [[GMSPlacesClient alloc] init];
     
-    CLLocationCoordinate2D topLeft = CLLocationCoordinate2DMake(34.316540, -118.612350);
-    CLLocationCoordinate2D bottomRight = CLLocationCoordinate2DMake(33.448647, -116.621358);
+    
+    CLLocationCoordinate2D topLeft = CLLocationCoordinate2DMake(kAutocompleteBoundTopLeftLatitude, kAutocompleteBoundTopLeftLongitude);
+    CLLocationCoordinate2D bottomRight = CLLocationCoordinate2DMake(kAutocompleteBoundBottomRightLatitude, kAutocompleteBoundBottomRightLongitude);
     
     GMSCoordinateBounds* bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:topLeft coordinate:bottomRight];
     
@@ -123,6 +163,8 @@
                             }];
 }
 - (IBAction)searchButtonClicked:(id)sender {
+    [self.delegate shouldRouteFrom:self.fromLocation to:self.toLocation withScenic:[KDNPreferenceManager getScenicOption]];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 - (IBAction)cancelButtonClicked:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -130,11 +172,16 @@
 - (IBAction)scenicPathSwitchChanged:(id)sender {
     [self updateScenicPathSelection];
 }
+- (IBAction)savePreviousSearchChanged:(id)sender {
+    [KDNPreferenceManager setShouldSavePreviousSearch:self.savePreviousSearchSwitch.on];
+}
 
 -(void)updateScenicPathSelection {
-    self.shouldFindScenicPath = self.scenicPathSwitch.on;
+    //save to preferences
+    [KDNPreferenceManager setScenicOption:self.scenicPathSwitch.on];
     
-    if (self.shouldFindScenicPath) {
+    //Update Search button title
+    if ([KDNPreferenceManager getScenicOption]) {
         [self.searchButton setTitle:kSearchButtonWithScenicPath forState:UIControlStateNormal];
     } else {
         [self.searchButton setTitle:kSearchButtonWithoutScenicPath forState:UIControlStateNormal];

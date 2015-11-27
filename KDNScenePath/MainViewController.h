@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
+#import "KDNRouteViewController.h"
 
-@interface MainViewController : UIViewController <CLLocationManagerDelegate>
+@interface MainViewController : UIViewController <CLLocationManagerDelegate, RouteFindingDelegate>
 
 @end
 

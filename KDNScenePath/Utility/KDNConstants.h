@@ -9,7 +9,14 @@
 #import <Foundation/Foundation.h>
 
 @interface KDNConstants : NSObject
+extern NSString * const kEmptyString;
+
 extern NSString * const kSearchResultTableViewCellIdentifier;
 extern NSString * const kSearchButtonWithoutScenicPath;
 extern NSString * const kSearchButtonWithScenicPath;
+
+extern double const kAutocompleteBoundTopLeftLatitude;
+extern double const kAutocompleteBoundTopLeftLongitude;
+extern double const kAutocompleteBoundBottomRightLatitude;
+extern double const kAutocompleteBoundBottomRightLongitude;
 @end

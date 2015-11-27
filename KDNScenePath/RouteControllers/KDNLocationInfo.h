@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-@interface KDNLocationInfo : NSObject
+/// Information of a location: title, latitude, longitude
+@interface KDNLocationInfo : NSObject <NSCoding>
 
 @property (strong, nonatomic) NSString* title;
 @property (nonatomic) double latitude;

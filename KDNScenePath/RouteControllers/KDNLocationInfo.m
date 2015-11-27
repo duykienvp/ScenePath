@@ -10,6 +10,10 @@
 
 @implementation KDNLocationInfo
 
+NSString* const kLatitudeCodingKey = @"kLatitudeCodingKey";
+NSString* const kLongitudeCodingKey = @"kLongitudeCodingKey";
+NSString* const kTitleCodingKey = @"kTitleCodingKey";
+
 -(id)initWithLatitude:(double)lat longitude:(double)lng title:(NSString *)title {
     self = [super init];
     if (self) {
@@ -18,6 +22,25 @@
         self.title = title;
     }
     return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder{
+    [aCoder encodeDouble:self.latitude forKey:kLatitudeCodingKey];
+    [aCoder encodeDouble:self.longitude forKey:kLongitudeCodingKey];
+    [aCoder encodeObject:self.title forKey:kTitleCodingKey];
+}
+
+-(id)initWithCoder:(NSCoder *)aDecoder{
+    if(self = [super init]){
+        self.latitude = [[aDecoder decodeObjectForKey:kLatitudeCodingKey] doubleValue];
+        self.longitude = [[aDecoder decodeObjectForKey:kLongitudeCodingKey] doubleValue];
+        self.title = [aDecoder decodeObjectForKey:kTitleCodingKey];
+    }
+    return self;
+}
+
+-(NSString*)description {
+    return [NSString stringWithFormat:@"[KDNLocationInfo: title = %@, latitude = %f, longitude = %f", self.title, self.latitude, self.longitude];
 }
 
 @end

@@ -9,6 +9,7 @@
 #import "KDNGoogleMapsUtility.h"
 
 NSString * const kGoogleMapsApiKey = @"AIzaSyD5I5TZ4q-NQBPJudfODoyKE7_1iVM3rOs";
+NSString * const kGoogleMapsApiServerKey = @"AIzaSyDgQyJN58hYAHKqDahdZ-sK1B8kyeLS-1o";
 NSString * const kGoogleMapsGeoCodeFromAddressUrlFormat = @"https://maps.googleapis.com/maps/api/geocode/json?address=%@&sensor=false";
 
 

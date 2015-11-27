@@ -11,6 +11,7 @@
 @interface KDNGoogleMapsUtility : NSObject
 
 extern NSString * const kGoogleMapsApiKey;
+extern NSString * const kGoogleMapsApiServerKey;
 extern NSString * const kGoogleMapsGeoCodeFromAddressUrlFormat;
 
 @end

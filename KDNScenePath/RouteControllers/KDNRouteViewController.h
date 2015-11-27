@@ -10,9 +10,15 @@
 #import "KDNLocationInfo.h"
 #import "KDNSearchResultsTableViewController.h"
 
+/// A delegate to find a route
+@protocol RouteFindingDelegate <NSObject>
+
+-(void)shouldRouteFrom:(KDNLocationInfo*)fromLocation to:(KDNLocationInfo*)toLocation withScenic:(BOOL)isScenic;
+
+@end
+
 @interface KDNRouteViewController : UIViewController <KDNMapsLocator, UISearchBarDelegate>
 
-@property (strong, nonatomic) KDNLocationInfo* fromLocation;
-@property (strong, nonatomic) KDNLocationInfo* toLocation;
+@property (weak, nonatomic) id <RouteFindingDelegate> delegate;
 
 @end

@@ -39,6 +39,8 @@
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self dismissViewControllerAnimated:true completion:nil];
+    
+    //Get corrected address information from Google Maps
     NSString* correctedAddress = self.searchResults[indexPath.row];
     correctedAddress = [correctedAddress stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet symbolCharacterSet]];
     

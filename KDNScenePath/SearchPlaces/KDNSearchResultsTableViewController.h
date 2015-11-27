@@ -20,6 +20,7 @@
 @property (weak) id <KDNMapsLocator> delegate;
 @property (nonatomic) BOOL isFromLocation;
 
+/// Reload data of the table with another array
 -(void)reloadDataWithArray:(NSArray*)array;
 
 @end
