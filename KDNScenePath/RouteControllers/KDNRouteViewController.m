@@ -173,10 +173,11 @@
                             }];
 }
 - (IBAction)searchButtonClicked:(id)sender {
-    [self.delegate shouldRouteFrom:self.fromLocation to:self.toLocation withScenic:[KDNPreferenceManager getScenicOption]];
+    [self.delegate shouldRouteFrom:self.fromLocation to:self.toLocation];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 - (IBAction)cancelButtonClicked:(id)sender {
+    [self.delegate shouldNotRoute];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 - (IBAction)scenicPathSwitchChanged:(id)sender {

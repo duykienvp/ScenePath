@@ -19,6 +19,7 @@
 		4BCF8C6A1C0CDF820047F99E /* KDNNodeInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BCF8C691C0CDF820047F99E /* KDNNodeInfo.m */; };
 		4BCF8C6D1C0D62B50047F99E /* KDNUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BCF8C6C1C0D62B50047F99E /* KDNUtility.m */; };
 		4BCF8C701C0D6E5C0047F99E /* KDNLatLng.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BCF8C6F1C0D6E5C0047F99E /* KDNLatLng.m */; };
+		4BCF8C741C0D91630047F99E /* KDNImageUploadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BCF8C731C0D91630047F99E /* KDNImageUploadViewController.m */; };
 		4BDBF5931C01358700DA6DA9 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BDBF5921C01358700DA6DA9 /* CoreLocation.framework */; };
 		4BFD498B1C0127D400D2331A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFD498A1C0127D400D2331A /* main.m */; };
 		4BFD498E1C0127D400D2331A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFD498D1C0127D400D2331A /* AppDelegate.m */; };
@@ -70,6 +71,8 @@
 		4BCF8C6C1C0D62B50047F99E /* KDNUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KDNUtility.m; path = Utility/KDNUtility.m; sourceTree = "<group>"; };
 		4BCF8C6E1C0D6E5C0047F99E /* KDNLatLng.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KDNLatLng.h; path = Model/KDNLatLng.h; sourceTree = "<group>"; };
 		4BCF8C6F1C0D6E5C0047F99E /* KDNLatLng.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KDNLatLng.m; path = Model/KDNLatLng.m; sourceTree = "<group>"; };
+		4BCF8C721C0D91630047F99E /* KDNImageUploadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KDNImageUploadViewController.h; path = ImageUploadController/KDNImageUploadViewController.h; sourceTree = "<group>"; };
+		4BCF8C731C0D91630047F99E /* KDNImageUploadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KDNImageUploadViewController.m; path = ImageUploadController/KDNImageUploadViewController.m; sourceTree = "<group>"; };
 		4BDBF5921C01358700DA6DA9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		4BFD49861C0127D400D2331A /* KDNScenePath.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KDNScenePath.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BFD498A1C0127D400D2331A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -164,6 +167,15 @@
 			name = GoogleMaps;
 			sourceTree = "<group>";
 		};
+		4BCF8C711C0D91380047F99E /* ImageUploadController */ = {
+			isa = PBXGroup;
+			children = (
+				4BCF8C721C0D91630047F99E /* KDNImageUploadViewController.h */,
+				4BCF8C731C0D91630047F99E /* KDNImageUploadViewController.m */,
+			);
+			name = ImageUploadController;
+			sourceTree = "<group>";
+		};
 		4BDBF58D1C01308600DA6DA9 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
@@ -202,6 +214,7 @@
 		4BFD49881C0127D400D2331A /* KDNScenePath */ = {
 			isa = PBXGroup;
 			children = (
+				4BCF8C711C0D91380047F99E /* ImageUploadController */,
 				4BCF8C581C0CDE870047F99E /* Model */,
 				4B0E500E1C01B1E000414D7D /* RouteControllers */,
 				4B0E50031C014DFE00414D7D /* SearchPlaces */,
@@ -452,6 +465,7 @@
 				4BFD49911C0127D400D2331A /* MainViewController.m in Sources */,
 				4BFD498E1C0127D400D2331A /* AppDelegate.m in Sources */,
 				4B3C9EEB1C0847090030A83A /* KDNPreferenceManager.m in Sources */,
+				4BCF8C741C0D91630047F99E /* KDNImageUploadViewController.m in Sources */,
 				4BFD498B1C0127D400D2331A /* main.m in Sources */,
 				4BCF8C6A1C0CDF820047F99E /* KDNNodeInfo.m in Sources */,
 				4BCF8C5B1C0CDEE30047F99E /* KDNScenicPathHelper.m in Sources */,

@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+@import GoogleMaps;
 
 @interface KDNGoogleMapsUtility : NSObject
 
@@ -15,6 +16,9 @@ extern NSString * const kGoogleMapsApiServerKey;
 extern NSString * const kGoogleMapsGeoCodeFromAddressUrlFormat;
 extern NSString * const kGoogleMapsDirectionsApiBaseURL;
 extern NSString * const kGoogleMapsDirectionsApiRequestURLFormat;
+
+///Constructs a path from a list of point (KDNLatLng)
++(GMSPath*)constructPathFromPoints:(NSArray*)points;
 
 @end
 

@@ -15,11 +15,11 @@
 }
 
 +(UIColor*)getScenicPathColor {
-    return [UIColor orangeColor];
+    return [UIColor cyanColor];
 }
 
 +(UIColor*)getShorestPathColor {
-    return [UIColor cyanColor];
+    return [UIColor redColor];
 }
 
 @end

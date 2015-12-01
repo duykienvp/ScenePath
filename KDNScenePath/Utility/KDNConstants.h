@@ -45,4 +45,13 @@ extern NSString * const kScenicePathReceivedPathKey;
 extern NSString * const kScenicBaseURL;
 extern NSString * const kScenicNearestNeighborRequestFormat;
 extern NSString * const kScenicPathRequestFormat;
+
+extern NSString* const kUploadImageSucceed;
+extern NSString* const kUploadImageFailed;
+
+extern NSString* const kImageUploadUrl;
+extern NSString* const kImageUploadUploadTitle;
+extern NSString* const kImageUploadUploadingTitle;
+extern NSString* const kImageUploadDoneTitle;
+
 @end

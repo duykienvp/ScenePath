@@ -41,4 +41,11 @@ NSString * const kScenicBaseURL = @"http://ec2-52-26-11-135.us-west-2.compute.am
 NSString * const kScenicNearestNeighborRequestFormat = @"%@/nearestneighbor?loc=%f,%f";
 NSString * const kScenicPathRequestFormat = @"%@/scenicpath?node1=%d&node2=%d&budget=%d";
 
+NSString* const kUploadImageSucceed = @"kUploadImageSucceed";
+NSString* const kUploadImageFailed = @"kUploadImageFailed";
+
+NSString* const kImageUploadUrl = @"http://ec2-52-26-11-135.us-west-2.compute.amazonaws.com:10000/duykien-csci587-jetty-oracle-spatial-0.0.1-SNAPSHOT/imageupload";
+NSString* const kImageUploadUploadTitle = @"Upload";
+NSString* const kImageUploadUploadingTitle = @"Uploading...";
+NSString* const kImageUploadDoneTitle = @"Done";
 @end

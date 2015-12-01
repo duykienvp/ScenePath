@@ -16,16 +16,18 @@
 #import "KDNPreferenceManager.h"
 #import "KDNUtility.h"
 #import "KDNLatLng.h"
+#import "KDNImageUploadViewController.h"
 @import GoogleMaps;
 
 @interface MainViewController ()
 
 @property (strong, nonatomic) KDNLocationInfo* fromLocation;
 @property (strong, nonatomic) KDNLocationInfo* toLocation;
-@property (nonatomic) BOOL isScenic;
 @property (nonatomic) BOOL shouldRoute;
 @property (strong, nonatomic) KDNNodeInfo* startNode;
 @property (strong, nonatomic) KDNNodeInfo* endNode;
+
+@property (strong, nonatomic) UIImage* imageToUpload;
 
 @end
 
@@ -130,14 +132,20 @@
     if ([segue.identifier isEqualToString:@"routeSegueIdentifier"]) {
         KDNRouteViewController* routeViewController = (KDNRouteViewController*)[segue destinationViewController];
         routeViewController.delegate = self;
+    } else if ([segue.identifier isEqualToString:@"mainToImageUploadSegueIdentifier"]) {
+        KDNImageUploadViewController* imageUploadViewController = (KDNImageUploadViewController*)[segue destinationViewController];
+        imageUploadViewController.image = self.imageToUpload;
     }
 }
 
--(void)shouldRouteFrom:(KDNLocationInfo*)fromLocation to:(KDNLocationInfo*)toLocation withScenic:(BOOL)isScenic {
+-(void)shouldRouteFrom:(KDNLocationInfo*)fromLocation to:(KDNLocationInfo*)toLocation {
     self.shouldRoute = YES;
     self.fromLocation = fromLocation;
     self.toLocation = toLocation;
-    self.isScenic = isScenic;
+}
+
+-(void)shouldNotRoute {
+    self.shouldRoute = NO;
 }
 
 -(void)route {
@@ -216,8 +224,9 @@
 }
 
 -(void)receivedScenicPathSucceeded:(NSNotification*)notification {
-//    NSLog(@"Path: %@", [[notification userInfo] objectForKey:kScenicePathReceivedPathKey]);
-    
+    NSLog(@"<%@:%@:%d>: Scenic OK", NSStringFromClass([self class]), NSStringFromSelector(_cmd), __LINE__);
+    GMSPath* path = [KDNGoogleMapsUtility constructPathFromPoints:[[notification userInfo] objectForKey:kScenicePathReceivedPathKey]];
+    [self drawPathFromPath:path color:[KDNUtility getScenicPathColor]];
 }
 
 -(void)receivedScenicPathFailed:(NSNotification*)notification {
@@ -241,19 +250,22 @@
 //    NSLog(@"encodedGmsPath = %@", encodedGmsPath);
     KDNMyGoogleMapsPathType pathType = [[[notification userInfo] valueForKey:kGooglePathReceivedPathTypeKey] integerValue];
     if (pathType == KDNMyGoogleMapsPathTypeGoogle) {
-        [self drawPathFrom:encodedGmsPath
+        [self drawPathFromEncodedPath:encodedGmsPath
                      color:[KDNUtility getGooglePathColor]];
     } else if (pathType == KDNMyGoogleMapsPathTypeScenic) {
-        [self drawPathFrom:encodedGmsPath
+        [self drawPathFromEncodedPath:encodedGmsPath
                      color:[KDNUtility getScenicPathColor]];
     }
 }
 
--(void)drawPathFrom:(NSString*)encodedGmsPath color:(UIColor*)color{
-//    __weak MainViewController* weakSelf = self;
+-(void)drawPathFromEncodedPath:(NSString*)encodedGmsPath color:(UIColor*)color{
+    GMSPath *path =[GMSPath pathFromEncodedPath:encodedGmsPath];
+    [self drawPathFromPath:path color:color];
+}
+
+-(void)drawPathFromPath:(GMSPath*)path color:(UIColor*)color{
     dispatch_async(dispatch_get_main_queue(),^{
         //update path
-        GMSPath *path =[GMSPath pathFromEncodedPath:encodedGmsPath];
         GMSPolyline *singleLine = [GMSPolyline polylineWithPath:path];
         singleLine.strokeWidth = 5;
         singleLine.strokeColor = color;
@@ -308,5 +320,43 @@
         [mapView animateWithCameraUpdate:[GMSCameraUpdate fitBounds:bounds]];
     });
 }
+
+- (IBAction)uploadImageClicked:(id)sender {
+    UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+    
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
+    {
+        [imagePickerController setSourceType:UIImagePickerControllerSourceTypeCamera];
+    }
+    
+    //TODO:
+//    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary])
+//    {
+//        [imagePickerController setSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+//    }
+//    [imagePickerController setAllowsEditing:false];
+    
+    // image picker needs a delegate,
+    [imagePickerController setDelegate:self];
+    
+    // Place image picker on the screen
+    [self presentViewController:imagePickerController animated:YES completion:nil];
+}
+
+//delegate methode will be called after picking photo either from camera or library
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+    self.imageToUpload = [info objectForKey:UIImagePickerControllerOriginalImage];
+    [self performSegueWithIdentifier:@"mainToImageUploadSegueIdentifier" sender:self];
+//    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+//    NSLog(@"%@", UIImageJPEGRepresentation(image, 1.0));
+//    
+//    //show image upload
+//    KDNImageUploadViewController* imageUploadViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"imageUploadViewController"];
+//    [imageUploadViewController.imageView setImage:image];
+//    [self presentViewController:imageUploadViewController animated:YES completion:nil];
+}
+
 
 @end

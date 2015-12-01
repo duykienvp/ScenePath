@@ -10,7 +10,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import "KDNRouteViewController.h"
 
-@interface MainViewController : UIViewController <CLLocationManagerDelegate, RouteFindingDelegate>
+@interface MainViewController : UIViewController <CLLocationManagerDelegate, RouteFindingDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @end
 

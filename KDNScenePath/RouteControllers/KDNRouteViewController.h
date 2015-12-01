@@ -13,7 +13,8 @@
 /// A delegate to find a route
 @protocol RouteFindingDelegate <NSObject>
 
--(void)shouldRouteFrom:(KDNLocationInfo*)fromLocation to:(KDNLocationInfo*)toLocation withScenic:(BOOL)isScenic;
+-(void)shouldRouteFrom:(KDNLocationInfo*)fromLocation to:(KDNLocationInfo*)toLocation;
+-(void)shouldNotRoute;
 
 @end
 
