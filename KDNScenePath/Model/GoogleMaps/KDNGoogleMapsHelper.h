@@ -8,12 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import "KDNLocationInfo.h"
+#import "KDNConstants.h"
 
 @interface KDNGoogleMapsHelper : NSObject
 
 /** Get encode GMS Path from location1 to location2
  Return the path or nil if error occurred
  */
-+(void)getEncodedGmsPathFrom:(KDNLocationInfo*)location1 to:(KDNLocationInfo*)location2;
-
++(void)getEncodedGmsPathFrom:(KDNLocationInfo *)location1 to:(KDNLocationInfo *)location2 pathType:(KDNMyGoogleMapsPathType)pathType;
 @end

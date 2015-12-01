@@ -10,10 +10,22 @@
 
 @implementation KDNPreferenceManager
 
+NSString* const kBugetKey = @"kBugetKey";
 NSString* const kScenicOptionKey = @"isScenic";
+NSString* const kGoogleOptionKey = @"isGoogle";
 NSString* const kShouldSavePreviousSearchKey = @"ShouldSavePreviousSearch";
 NSString* const kPreviousFromLocationKey = @"PreviousFromLocation";
 NSString* const kPreviousToLocationKey = @"PreviousToLocation";
+
++(void)setBudget:(int)budget {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setInteger:budget forKey:kBugetKey];
+    [defaults synchronize];
+}
+
++(int)getBudget {
+    return (int)[[NSUserDefaults standardUserDefaults] integerForKey:kBugetKey];
+}
 
 +(void)setScenicOption:(BOOL)isScenic {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -22,6 +34,16 @@ NSString* const kPreviousToLocationKey = @"PreviousToLocation";
 }
 +(BOOL)getScenicOption {
     return [[NSUserDefaults standardUserDefaults] boolForKey:kScenicOptionKey];
+}
+
++(void)setGoogleOption:(BOOL)isGoogle {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:isGoogle forKey:kGoogleOptionKey];
+    [defaults synchronize];
+}
+
++(BOOL)getGoogleOption {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:kGoogleOptionKey];
 }
 
 +(void)setShouldSavePreviousSearch:(BOOL)shouldSavePreviousSearch {

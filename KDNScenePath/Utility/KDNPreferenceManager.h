@@ -12,8 +12,14 @@
 /// Save/Retrieve user's preferences
 @interface KDNPreferenceManager : NSObject
 
++(void)setBudget:(int)budget;
++(int)getBudget;
+
 +(void)setScenicOption:(BOOL)isScenic;
 +(BOOL)getScenicOption;
+
++(void)setGoogleOption:(BOOL)isGoogle;
++(BOOL)getGoogleOption;
 
 +(void)setShouldSavePreviousSearch:(BOOL)shouldSavePreviousSearch;
 +(BOOL)getShouldSavePreviousSearch;

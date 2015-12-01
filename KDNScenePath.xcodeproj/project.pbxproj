@@ -17,6 +17,8 @@
 		4BCF8C641C0CDF2B0047F99E /* KDNGoogleMapsUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BCF8C621C0CDF2B0047F99E /* KDNGoogleMapsUtility.m */; };
 		4BCF8C671C0CDF570047F99E /* KDNLocationInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BCF8C661C0CDF570047F99E /* KDNLocationInfo.m */; };
 		4BCF8C6A1C0CDF820047F99E /* KDNNodeInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BCF8C691C0CDF820047F99E /* KDNNodeInfo.m */; };
+		4BCF8C6D1C0D62B50047F99E /* KDNUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BCF8C6C1C0D62B50047F99E /* KDNUtility.m */; };
+		4BCF8C701C0D6E5C0047F99E /* KDNLatLng.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BCF8C6F1C0D6E5C0047F99E /* KDNLatLng.m */; };
 		4BDBF5931C01358700DA6DA9 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BDBF5921C01358700DA6DA9 /* CoreLocation.framework */; };
 		4BFD498B1C0127D400D2331A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFD498A1C0127D400D2331A /* main.m */; };
 		4BFD498E1C0127D400D2331A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFD498D1C0127D400D2331A /* AppDelegate.m */; };
@@ -64,6 +66,10 @@
 		4BCF8C661C0CDF570047F99E /* KDNLocationInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KDNLocationInfo.m; path = Model/KDNLocationInfo.m; sourceTree = "<group>"; };
 		4BCF8C681C0CDF820047F99E /* KDNNodeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KDNNodeInfo.h; path = Model/KDNNodeInfo.h; sourceTree = "<group>"; };
 		4BCF8C691C0CDF820047F99E /* KDNNodeInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KDNNodeInfo.m; path = Model/KDNNodeInfo.m; sourceTree = "<group>"; };
+		4BCF8C6B1C0D62B50047F99E /* KDNUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KDNUtility.h; path = Utility/KDNUtility.h; sourceTree = "<group>"; };
+		4BCF8C6C1C0D62B50047F99E /* KDNUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KDNUtility.m; path = Utility/KDNUtility.m; sourceTree = "<group>"; };
+		4BCF8C6E1C0D6E5C0047F99E /* KDNLatLng.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KDNLatLng.h; path = Model/KDNLatLng.h; sourceTree = "<group>"; };
+		4BCF8C6F1C0D6E5C0047F99E /* KDNLatLng.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KDNLatLng.m; path = Model/KDNLatLng.m; sourceTree = "<group>"; };
 		4BDBF5921C01358700DA6DA9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		4BFD49861C0127D400D2331A /* KDNScenePath.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KDNScenePath.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BFD498A1C0127D400D2331A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -136,6 +142,8 @@
 			children = (
 				4BCF8C651C0CDF570047F99E /* KDNLocationInfo.h */,
 				4BCF8C661C0CDF570047F99E /* KDNLocationInfo.m */,
+				4BCF8C6E1C0D6E5C0047F99E /* KDNLatLng.h */,
+				4BCF8C6F1C0D6E5C0047F99E /* KDNLatLng.m */,
 				4BCF8C5E1C0CDF200047F99E /* GoogleMaps */,
 				4BCF8C591C0CDEE30047F99E /* KDNScenicPathHelper.h */,
 				4BCF8C5A1C0CDEE30047F99E /* KDNScenicPathHelper.m */,
@@ -163,6 +171,8 @@
 				4B0E50091C014F2800414D7D /* KDNConstants.m */,
 				4B3C9EE91C0847090030A83A /* KDNPreferenceManager.h */,
 				4B3C9EEA1C0847090030A83A /* KDNPreferenceManager.m */,
+				4BCF8C6B1C0D62B50047F99E /* KDNUtility.h */,
+				4BCF8C6C1C0D62B50047F99E /* KDNUtility.m */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -438,6 +448,7 @@
 				4BCF8C671C0CDF570047F99E /* KDNLocationInfo.m in Sources */,
 				4B0E50071C014E5100414D7D /* KDNSearchResultsTableViewController.m in Sources */,
 				4BCF8C631C0CDF2B0047F99E /* KDNGoogleMapsHelper.m in Sources */,
+				4BCF8C701C0D6E5C0047F99E /* KDNLatLng.m in Sources */,
 				4BFD49911C0127D400D2331A /* MainViewController.m in Sources */,
 				4BFD498E1C0127D400D2331A /* AppDelegate.m in Sources */,
 				4B3C9EEB1C0847090030A83A /* KDNPreferenceManager.m in Sources */,
@@ -446,6 +457,7 @@
 				4BCF8C5B1C0CDEE30047F99E /* KDNScenicPathHelper.m in Sources */,
 				4B0E50111C01B20C00414D7D /* KDNRouteViewController.m in Sources */,
 				4BCF8C641C0CDF2B0047F99E /* KDNGoogleMapsUtility.m in Sources */,
+				4BCF8C6D1C0D62B50047F99E /* KDNUtility.m in Sources */,
 				4B0E500A1C014F2800414D7D /* KDNConstants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

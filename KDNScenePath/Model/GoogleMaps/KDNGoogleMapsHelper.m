@@ -13,8 +13,8 @@
 
 @implementation KDNGoogleMapsHelper
 
-+(void)getEncodedGmsPathFrom:(KDNLocationInfo *)location1 to:(KDNLocationInfo *)location2 {
-    NSLog(@"Find route from %@ to %@", [location1 description], [location2 description]);
++(void)getEncodedGmsPathFrom:(KDNLocationInfo *)location1 to:(KDNLocationInfo *)location2 pathType:(KDNMyGoogleMapsPathType)pathType{
+    NSLog(@"Get GOOGLE route from %@ to %@", [location1 description], [location2 description]);
     NSString *urlString = [NSString stringWithFormat:
                            kGoogleMapsDirectionsApiRequestURLFormat,
                            kGoogleMapsDirectionsApiBaseURL,
@@ -33,8 +33,12 @@
                 NSString* status = dict[@"status"];
                 if ([status isEqualToString:@"OK"]) {
                     NSString* encodedPath = dict[@"routes"][0][@"overview_polyline"][@"points"];
-                    NSDictionary *data = [NSDictionary dictionaryWithObject:encodedPath forKey:kGooglePathReceivedEncodedPathKey];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kGooglePathReceivedSuccessfully object:nil userInfo:data];
+
+                    NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
+                    [userInfo setObject:encodedPath forKey:kGooglePathReceivedEncodedPathKey];
+                    [userInfo setObject:[NSNumber numberWithInteger:pathType] forKey:kGooglePathReceivedPathTypeKey];
+                    
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kGooglePathReceivedSuccessfully object:nil userInfo:userInfo];
                 } else {
                     NSLog(@"Error getting route: status = %@", status);
                     [[NSNotificationCenter defaultCenter] postNotificationName:kGooglePathReceivedFailed object:nil];

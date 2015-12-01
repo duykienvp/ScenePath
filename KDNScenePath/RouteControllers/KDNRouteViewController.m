@@ -18,6 +18,8 @@
 @property (weak, nonatomic) IBOutlet UISwitch *savePreviousSearchSwitch;
 @property (weak, nonatomic) IBOutlet UIButton *searchButton;
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
+@property (weak, nonatomic) IBOutlet UISwitch *googlePathSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *shortestPathSwitch;
 
 @property (strong, nonatomic) KDNSearchResultsTableViewController* searchResultsTableViewController;
 
@@ -32,6 +34,7 @@
     [super viewDidLoad];
 //    NSLog(@"LOAD");
     // Do any additional setup after loading the view.
+    [KDNPreferenceManager setBudget:10000000];
     
     [self.fromTextField addTarget:self action:@selector(fromTextFieldClicked) forControlEvents:UIControlEventEditingDidBegin];
     [self.toTextField addTarget:self action:@selector(toTextFieldClicked) forControlEvents:UIControlEventEditingDidBegin];
@@ -40,7 +43,8 @@
     self.searchResultsTableViewController.delegate = self;
     
     [self.scenicPathSwitch setOn:[KDNPreferenceManager getScenicOption] animated:NO];
-    [self updateScenicPathSelection];
+    [self.googlePathSwitch setOn:[KDNPreferenceManager getGoogleOption] animated:NO];
+//    [self updateScenicPathSelection];
     
     if ([KDNPreferenceManager getShouldSavePreviousSearch]) {
         //get info from preference
@@ -176,12 +180,17 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 - (IBAction)scenicPathSwitchChanged:(id)sender {
-    [self updateScenicPathSelection];
+    [KDNPreferenceManager setScenicOption:self.scenicPathSwitch.isOn];
+//    [self updateScenicPathSelection];
+}
+- (IBAction)googlePathSwitchChanged:(id)sender {
+    [KDNPreferenceManager setGoogleOption:self.googlePathSwitch.isOn];
 }
 - (IBAction)savePreviousSearchChanged:(id)sender {
     [KDNPreferenceManager setShouldSavePreviousSearch:self.savePreviousSearchSwitch.on];
 }
 
+//NOT CALL NOW
 -(void)updateScenicPathSelection {
     //save to preferences
     [KDNPreferenceManager setScenicOption:self.scenicPathSwitch.on];

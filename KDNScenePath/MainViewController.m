@@ -13,6 +13,9 @@
 #import "KDNNodeInfo.h"
 #import "KDNConstants.h"
 #import "KDNScenicPathHelper.h"
+#import "KDNPreferenceManager.h"
+#import "KDNUtility.h"
+#import "KDNLatLng.h"
 @import GoogleMaps;
 
 @interface MainViewController ()
@@ -55,12 +58,37 @@
     [self.view bringSubviewToFront:routeButton];
     
     //add observer for getting Google path
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeGoogleMapsSucceeded:) name:kGooglePathReceivedSuccessfully object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeGoogleMapsFailed:) name:kGooglePathReceivedFailed object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(routeGoogleMapsSucceeded:)
+                                                 name:kGooglePathReceivedSuccessfully
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(routeGoogleMapsFailed:)
+                                                 name:kGooglePathReceivedFailed
+                                               object:nil];
     
     //add observer for getting nearest neighbors
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedNodeInfoSucceeded:) name:kSceniceNearestNeighborReceivedSuccessfully object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedNodeInfoFailed:) name:kSceniceNearestNeighborReceivedFailed object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receivedNodeInfoSucceeded:)
+                                                 name:kSceniceNearestNeighborReceivedSuccessfully
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receivedNodeInfoFailed:)
+                                                 name:kSceniceNearestNeighborReceivedFailed
+                                               object:nil];
+    
+    //add observer for getting scenic path
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receivedScenicPathSucceeded:)
+                                                 name:kScenicePathReceivedSuccessfully
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receivedScenicPathFailed:)
+                                                 name:kScenicePathReceivedFailed
+                                               object:nil];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -78,7 +106,8 @@
 }
 
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
-    if (status == kCLAuthorizationStatusAuthorizedWhenInUse || status == kCLAuthorizationStatusAuthorizedAlways) {
+    if (status == kCLAuthorizationStatusAuthorizedWhenInUse
+        || status == kCLAuthorizationStatusAuthorizedAlways) {
         [locationManager startUpdatingLocation];
     }
 }
@@ -112,22 +141,34 @@
 }
 
 -(void)route {
-    if (self.isScenic) {
+    dispatch_async(dispatch_get_main_queue(),^{
+        //clear the old map
+        [mapView clear];
+    });
+    
+    if ([KDNPreferenceManager getScenicOption]) {
         [self routeScenic];
-    } else {
+    }
+    if ([KDNPreferenceManager getGoogleOption]) {
         [self routeGoogleMaps];
     }
+    
+    if ([KDNPreferenceManager getScenicOption]
+        || [KDNPreferenceManager getGoogleOption]) {
+        [self updateMapMarkers];
+        [self updateMapCamera];
+    }
+//    if (self.isScenic) {
+//        [self routeScenic];
+//    } else {
+//        [self routeGoogleMaps];
+//    }
 }
 
 -(void)routeScenic {
-    [KDNScenicPathHelper getRoadNetworkNearestNeightborAt:self.fromLocation.latitude longitude:self.fromLocation.longitude isStartNode:YES];
-    
-    //TODO:
-//    KDNNodeInfo* node1 = [self getRoadNetworkNearestNeightborAt:self.fromLocation.latitude longitude:self.fromLocation.longitude];
-//    NSLog(@"NodeId of fromLocation: %@", [node1 description]);
-//    
-//    KDNNodeInfo* node2 = [self getRoadNetworkNearestNeightborAt:self.toLocation.latitude longitude:self.toLocation.longitude];
-//    NSLog(@"NodeId of toLocation: %@", [node2 description]);
+    [KDNScenicPathHelper getRoadNetworkNearestNeightborAt:self.fromLocation.latitude
+                                                longitude:self.fromLocation.longitude
+                                              isStartNode:YES];
 }
 
 -(void)receivedNodeInfoFailed:(NSNotification*)notification {
@@ -141,18 +182,51 @@
         self.startNode = [[notification userInfo] valueForKey:kSceniceNearestNeighborReceivedNodeInfoKey];
 //        NSLog(@"startNode: %@", self.startNode);
         //if we just get the startNode, we need to get endNode
-        [KDNScenicPathHelper getRoadNetworkNearestNeightborAt:self.toLocation.latitude longitude:self.toLocation.longitude isStartNode:NO];
+        [KDNScenicPathHelper getRoadNetworkNearestNeightborAt:self.toLocation.latitude
+                                                    longitude:self.toLocation.longitude
+                                                  isStartNode:NO];
     } else {
         self.endNode = [[notification userInfo] valueForKey:kSceniceNearestNeighborReceivedNodeInfoKey];
 //        NSLog(@"endNode: %@", self.endNode);
         //if we get endNode, start doing jobs
-        //TODO
+        KDNLocationInfo* startNodeLocation = [[KDNLocationInfo alloc] initWithLatitude:self.startNode.latitude
+                                                                             longitude:self.startNode.longitude
+                                                                                 title:self.startNode.nodeName];
+        KDNLocationInfo* endNodeLocation = [[KDNLocationInfo alloc] initWithLatitude:self.endNode.latitude
+                                                                           longitude:self.endNode.longitude
+                                                                               title:self.endNode.nodeName];
+        
+        //get Goolge's path from fromLocation to startNode, and from endNode to toLocation
+        [KDNGoogleMapsHelper getEncodedGmsPathFrom:self.fromLocation
+                                                to:startNodeLocation
+                                          pathType:KDNMyGoogleMapsPathTypeScenic];
+        [KDNGoogleMapsHelper getEncodedGmsPathFrom:endNodeLocation
+                                                to:self.toLocation
+                                          pathType:KDNMyGoogleMapsPathTypeScenic];
+        //get Scenic path from startNode to endNode
+        int budget = [KDNPreferenceManager getBudget];
+        if (budget == 0) {
+            budget = kDefaultBudget;
+            [KDNPreferenceManager setBudget:budget];
+        }
+        [KDNScenicPathHelper getScenicPathFrom:self.startNode
+                                            to:self.endNode
+                                        budget:budget];
     }
+}
+
+-(void)receivedScenicPathSucceeded:(NSNotification*)notification {
+//    NSLog(@"Path: %@", [[notification userInfo] objectForKey:kScenicePathReceivedPathKey]);
+    
+}
+
+-(void)receivedScenicPathFailed:(NSNotification*)notification {
+    NSLog(@"Failed to get scenic path");
 }
 
 
 -(void)routeGoogleMaps {
-    [KDNGoogleMapsHelper getEncodedGmsPathFrom:self.fromLocation to:self.toLocation];
+    [KDNGoogleMapsHelper getEncodedGmsPathFrom:self.fromLocation to:self.toLocation pathType:KDNMyGoogleMapsPathTypeGoogle];
 }
 
 -(void)routeGoogleMapsFailed:(NSNotification*)notification {
@@ -161,53 +235,78 @@
 
 -(void)routeGoogleMapsSucceeded:(NSNotification*)notification {
     NSString* encodedGmsPath = [[notification userInfo] valueForKey:kGooglePathReceivedEncodedPathKey];
-//    NSLog(@"encodedGmsPath = %@", encodedGmsPath);
-    __weak MainViewController* weakSelf = self;
-    if (encodedGmsPath) {
-        dispatch_async(dispatch_get_main_queue(),^{
-            //clear the old map
-            [mapView clear];
-            
-            //update path
-            GMSPath *path =[GMSPath pathFromEncodedPath:encodedGmsPath];
-            GMSPolyline *singleLine = [GMSPolyline polylineWithPath:path];
-            singleLine.strokeWidth = 5;
-            singleLine.strokeColor = [UIColor blueColor];
-            singleLine.map = mapView;
-            
-            //update markers at start/end positions
-            CLLocationCoordinate2D fromPosition = CLLocationCoordinate2DMake(weakSelf.fromLocation.latitude, weakSelf.fromLocation.longitude);
-            GMSMarker *fromMarker = [GMSMarker markerWithPosition:fromPosition];
-            fromMarker.title = weakSelf.fromLocation.title;
-            fromMarker.map = mapView;
-            
-            CLLocationCoordinate2D toPosition = CLLocationCoordinate2DMake(weakSelf.toLocation.latitude, weakSelf.toLocation.longitude);
-            GMSMarker *toMarker = [GMSMarker markerWithPosition:toPosition];
-            toMarker.title = weakSelf.toLocation.title;
-            toMarker.map = mapView;
-            
-            //find max/min lat/long for camera bounds
-            double maxLat = -DBL_MAX;
-            double minLat = DBL_MAX;
-            double maxLong = -DBL_MAX;
-            double minLong = DBL_MAX;
-            for (int i = 0; i < path.count; i++) {
-                double aLat = [path coordinateAtIndex:i].latitude;
-                double aLong = [path coordinateAtIndex:i].longitude;
-                
-                maxLat = maxLat < aLat ? aLat : maxLat;
-                minLat = aLat < minLat ? aLat : minLat;
-                
-                maxLong = maxLong < aLong ? aLong : maxLong;
-                minLong = aLong < minLong ? aLong : minLong;
-            }
-            
-            //update map bounds
-            GMSCoordinateBounds* bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:CLLocationCoordinate2DMake(maxLat, maxLong)
-                                                                               coordinate:CLLocationCoordinate2DMake(minLat, minLong)];
-            [mapView animateWithCameraUpdate:[GMSCameraUpdate fitBounds:bounds]];
-        });
+    if (encodedGmsPath == nil) {
+        return;
     }
+//    NSLog(@"encodedGmsPath = %@", encodedGmsPath);
+    KDNMyGoogleMapsPathType pathType = [[[notification userInfo] valueForKey:kGooglePathReceivedPathTypeKey] integerValue];
+    if (pathType == KDNMyGoogleMapsPathTypeGoogle) {
+        [self drawPathFrom:encodedGmsPath
+                     color:[KDNUtility getGooglePathColor]];
+    } else if (pathType == KDNMyGoogleMapsPathTypeScenic) {
+        [self drawPathFrom:encodedGmsPath
+                     color:[KDNUtility getScenicPathColor]];
+    }
+}
+
+-(void)drawPathFrom:(NSString*)encodedGmsPath color:(UIColor*)color{
+//    __weak MainViewController* weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(),^{
+        //update path
+        GMSPath *path =[GMSPath pathFromEncodedPath:encodedGmsPath];
+        GMSPolyline *singleLine = [GMSPolyline polylineWithPath:path];
+        singleLine.strokeWidth = 5;
+        singleLine.strokeColor = color;
+        singleLine.map = mapView;
+    });
+}
+
+-(void)updateMapMarkers {
+    __weak MainViewController* weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(),^{
+        //update markers at start/end positions
+        CLLocationCoordinate2D fromPosition = CLLocationCoordinate2DMake(weakSelf.fromLocation.latitude, weakSelf.fromLocation.longitude);
+        GMSMarker *fromMarker = [GMSMarker markerWithPosition:fromPosition];
+        fromMarker.title = weakSelf.fromLocation.title;
+        fromMarker.map = mapView;
+        
+        CLLocationCoordinate2D toPosition = CLLocationCoordinate2DMake(weakSelf.toLocation.latitude, weakSelf.toLocation.longitude);
+        GMSMarker *toMarker = [GMSMarker markerWithPosition:toPosition];
+        toMarker.title = weakSelf.toLocation.title;
+        toMarker.map = mapView;
+    });
+}
+-(void)updateMapCamera {
+    __weak MainViewController* weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(),^{
+        //find max/min lat/long for camera bounds
+        double maxLat;
+        double maxLng;;
+        
+        double minLat;
+        double minLng;
+        
+        if (weakSelf.fromLocation.latitude < weakSelf.toLocation.latitude) {
+            minLat = weakSelf.fromLocation.latitude;
+            maxLat = weakSelf.toLocation.latitude;
+        } else {
+            minLat = weakSelf.toLocation.latitude;
+            maxLat = weakSelf.fromLocation.latitude;
+        }
+        
+        if (weakSelf.fromLocation.longitude < weakSelf.toLocation.longitude) {
+            minLng = weakSelf.fromLocation.longitude;
+            maxLng = weakSelf.toLocation.longitude;
+        } else {
+            minLng = weakSelf.toLocation.longitude;
+            maxLng = weakSelf.fromLocation.longitude;
+        }
+        
+        //update map bounds
+        GMSCoordinateBounds* bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:CLLocationCoordinate2DMake(maxLat, maxLng)
+                                                                           coordinate:CLLocationCoordinate2DMake(minLat, minLng)];
+        [mapView animateWithCameraUpdate:[GMSCameraUpdate fitBounds:bounds]];
+    });
 }
 
 @end
