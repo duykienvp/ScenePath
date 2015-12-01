@@ -13,6 +13,8 @@
 extern NSString * const kGoogleMapsApiKey;
 extern NSString * const kGoogleMapsApiServerKey;
 extern NSString * const kGoogleMapsGeoCodeFromAddressUrlFormat;
+extern NSString * const kGoogleMapsDirectionsApiBaseURL;
+extern NSString * const kGoogleMapsDirectionsApiRequestURLFormat;
 
 @end
 

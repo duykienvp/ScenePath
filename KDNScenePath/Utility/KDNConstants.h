@@ -19,4 +19,17 @@ extern double const kAutocompleteBoundTopLeftLatitude;
 extern double const kAutocompleteBoundTopLeftLongitude;
 extern double const kAutocompleteBoundBottomRightLatitude;
 extern double const kAutocompleteBoundBottomRightLongitude;
+
+extern NSString * const kGooglePathReceivedSuccessfully;
+extern NSString * const kGooglePathReceivedFailed;
+extern NSString * const kGooglePathReceivedEncodedPathKey;
+
+extern NSString * const kSceniceNearestNeighborReceivedSuccessfully;
+extern NSString * const kSceniceNearestNeighborReceivedFailed;
+extern NSString * const kSceniceNearestNeighborReceivedNodeInfoKey;
+extern NSString * const kSceniceNearestNeighborReceivedIsScenicKey;
+
+extern NSString * const kSceniceRequestFormat;
+extern NSString * const kSceniceBaseURL;
+extern NSString * const kSceniceNearestNeighborPath;
 @end

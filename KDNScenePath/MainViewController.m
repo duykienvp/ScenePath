@@ -9,6 +9,10 @@
 #import "MainViewController.h"
 #import "KDNLocationInfo.h"
 #import "KDNGoogleMapsUtility.h"
+#import "KDNGoogleMapsHelper.h"
+#import "KDNNodeInfo.h"
+#import "KDNConstants.h"
+#import "KDNScenicPathHelper.h"
 @import GoogleMaps;
 
 @interface MainViewController ()
@@ -17,6 +21,8 @@
 @property (strong, nonatomic) KDNLocationInfo* toLocation;
 @property (nonatomic) BOOL isScenic;
 @property (nonatomic) BOOL shouldRoute;
+@property (strong, nonatomic) KDNNodeInfo* startNode;
+@property (strong, nonatomic) KDNNodeInfo* endNode;
 
 @end
 
@@ -47,6 +53,14 @@
     mapView.myLocationEnabled = YES;
     mapView.settings.myLocationButton = YES;
     [self.view bringSubviewToFront:routeButton];
+    
+    //add observer for getting Google path
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeGoogleMapsSucceeded:) name:kGooglePathReceivedSuccessfully object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeGoogleMapsFailed:) name:kGooglePathReceivedFailed object:nil];
+    
+    //add observer for getting nearest neighbors
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedNodeInfoSucceeded:) name:kSceniceNearestNeighborReceivedSuccessfully object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedNodeInfoFailed:) name:kSceniceNearestNeighborReceivedFailed object:nil];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -99,84 +113,101 @@
 
 -(void)route {
     if (self.isScenic) {
-        
+        [self routeScenic];
     } else {
         [self routeGoogleMaps];
     }
 }
 
--(void)routeGoogleMaps {
-    NSLog(@"Find route from %@ to %@", [self.fromLocation description], [self.toLocation description]);
-    NSString *urlString = [NSString stringWithFormat:
-                           @"%@?origin=%f,%f&destination=%f,%f&sensor=true&key=%@",
-                           @"https://maps.googleapis.com/maps/api/directions/json",
-                           self.fromLocation.latitude,
-                           self.fromLocation.longitude,
-                           self.toLocation.latitude,
-                           self.toLocation.longitude,
-                           kGoogleMapsApiServerKey];
-    NSURL *directionsURL = [NSURL URLWithString:urlString];
-    __weak MainViewController* weakSelf = self;
+-(void)routeScenic {
+    [KDNScenicPathHelper getRoadNetworkNearestNeightborAt:self.fromLocation.latitude longitude:self.fromLocation.longitude isStartNode:YES];
     
-    [[[NSURLSession sharedSession] dataTaskWithURL:directionsURL completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        @try {
-            if (data != nil) {
-                NSDictionary* dict = (NSDictionary*)[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
-                NSLog(@"Dict: %@", dict);
-                NSString* status = dict[@"status"];
-                if ([status isEqualToString:@"OK"]) {
-                    dispatch_async(dispatch_get_main_queue(),^{
-                        //clear the old map
-                        [mapView clear];
-                        
-                        //update path
-                        GMSPath *path =[GMSPath pathFromEncodedPath:dict[@"routes"][0][@"overview_polyline"][@"points"]];
-                        GMSPolyline *singleLine = [GMSPolyline polylineWithPath:path];
-                        singleLine.strokeWidth = 5;
-                        singleLine.strokeColor = [UIColor blueColor];
-                        singleLine.map = mapView;
-                        
-                        //update markers at start/end positions
-                        CLLocationCoordinate2D fromPosition = CLLocationCoordinate2DMake(weakSelf.fromLocation.latitude, weakSelf.fromLocation.longitude);
-                        GMSMarker *fromMarker = [GMSMarker markerWithPosition:fromPosition];
-                        fromMarker.title = weakSelf.fromLocation.title;
-                        fromMarker.map = mapView;
-                        
-                        CLLocationCoordinate2D toPosition = CLLocationCoordinate2DMake(weakSelf.toLocation.latitude, weakSelf.toLocation.longitude);
-                        GMSMarker *toMarker = [GMSMarker markerWithPosition:toPosition];
-                        toMarker.title = weakSelf.toLocation.title;
-                        toMarker.map = mapView;
-                        
-                        //find max/min lat/long for camera bounds
-                        double maxLat = -DBL_MAX;
-                        double minLat = DBL_MAX;
-                        double maxLong = -DBL_MAX;
-                        double minLong = DBL_MAX;
-                        for (int i = 0; i < path.count; i++) {
-                            double aLat = [path coordinateAtIndex:i].latitude;
-                            double aLong = [path coordinateAtIndex:i].longitude;
-                            
-                            maxLat = maxLat < aLat ? aLat : maxLat;
-                            minLat = aLat < minLat ? aLat : minLat;
-                            
-                            maxLong = maxLong < aLong ? aLong : maxLong;
-                            minLong = aLong < minLong ? aLong : minLong;
-                        }
-                        
-                        //update map bounds
-                        GMSCoordinateBounds* bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:CLLocationCoordinate2DMake(maxLat, maxLong)
-                                                                                           coordinate:CLLocationCoordinate2DMake(minLat, minLong)];
-                        [mapView animateWithCameraUpdate:[GMSCameraUpdate fitBounds:bounds]];
-                    });
-                } else {
-                    NSLog(@"Error getting route: status = %@", status);
-                }
+    //TODO:
+//    KDNNodeInfo* node1 = [self getRoadNetworkNearestNeightborAt:self.fromLocation.latitude longitude:self.fromLocation.longitude];
+//    NSLog(@"NodeId of fromLocation: %@", [node1 description]);
+//    
+//    KDNNodeInfo* node2 = [self getRoadNetworkNearestNeightborAt:self.toLocation.latitude longitude:self.toLocation.longitude];
+//    NSLog(@"NodeId of toLocation: %@", [node2 description]);
+}
+
+-(void)receivedNodeInfoFailed:(NSNotification*)notification {
+    NSLog(@"Failed to get nearest neighbor");
+}
+
+-(void)receivedNodeInfoSucceeded:(NSNotification*)notification {
+//     NSLog(@"SUCCEEDED to get nearest neighbor: %@", [notification userInfo]);
+    BOOL isStartNode = [[[notification userInfo] valueForKey:kSceniceNearestNeighborReceivedIsScenicKey] boolValue];
+    if (isStartNode) {
+        self.startNode = [[notification userInfo] valueForKey:kSceniceNearestNeighborReceivedNodeInfoKey];
+//        NSLog(@"startNode: %@", self.startNode);
+        //if we just get the startNode, we need to get endNode
+        [KDNScenicPathHelper getRoadNetworkNearestNeightborAt:self.toLocation.latitude longitude:self.toLocation.longitude isStartNode:NO];
+    } else {
+        self.endNode = [[notification userInfo] valueForKey:kSceniceNearestNeighborReceivedNodeInfoKey];
+//        NSLog(@"endNode: %@", self.endNode);
+        //if we get endNode, start doing jobs
+        //TODO
+    }
+}
+
+
+-(void)routeGoogleMaps {
+    [KDNGoogleMapsHelper getEncodedGmsPathFrom:self.fromLocation to:self.toLocation];
+}
+
+-(void)routeGoogleMapsFailed:(NSNotification*)notification {
+    NSLog(@"Failed to get Google Path");
+}
+
+-(void)routeGoogleMapsSucceeded:(NSNotification*)notification {
+    NSString* encodedGmsPath = [[notification userInfo] valueForKey:kGooglePathReceivedEncodedPathKey];
+//    NSLog(@"encodedGmsPath = %@", encodedGmsPath);
+    __weak MainViewController* weakSelf = self;
+    if (encodedGmsPath) {
+        dispatch_async(dispatch_get_main_queue(),^{
+            //clear the old map
+            [mapView clear];
+            
+            //update path
+            GMSPath *path =[GMSPath pathFromEncodedPath:encodedGmsPath];
+            GMSPolyline *singleLine = [GMSPolyline polylineWithPath:path];
+            singleLine.strokeWidth = 5;
+            singleLine.strokeColor = [UIColor blueColor];
+            singleLine.map = mapView;
+            
+            //update markers at start/end positions
+            CLLocationCoordinate2D fromPosition = CLLocationCoordinate2DMake(weakSelf.fromLocation.latitude, weakSelf.fromLocation.longitude);
+            GMSMarker *fromMarker = [GMSMarker markerWithPosition:fromPosition];
+            fromMarker.title = weakSelf.fromLocation.title;
+            fromMarker.map = mapView;
+            
+            CLLocationCoordinate2D toPosition = CLLocationCoordinate2DMake(weakSelf.toLocation.latitude, weakSelf.toLocation.longitude);
+            GMSMarker *toMarker = [GMSMarker markerWithPosition:toPosition];
+            toMarker.title = weakSelf.toLocation.title;
+            toMarker.map = mapView;
+            
+            //find max/min lat/long for camera bounds
+            double maxLat = -DBL_MAX;
+            double minLat = DBL_MAX;
+            double maxLong = -DBL_MAX;
+            double minLong = DBL_MAX;
+            for (int i = 0; i < path.count; i++) {
+                double aLat = [path coordinateAtIndex:i].latitude;
+                double aLong = [path coordinateAtIndex:i].longitude;
+                
+                maxLat = maxLat < aLat ? aLat : maxLat;
+                minLat = aLat < minLat ? aLat : minLat;
+                
+                maxLong = maxLong < aLong ? aLong : maxLong;
+                minLong = aLong < minLong ? aLong : minLong;
             }
-        }
-        @catch (NSException *exception) {
-            NSLog(@"Error requesting route: %@", [exception description]);
-        }
-    }] resume];
+            
+            //update map bounds
+            GMSCoordinateBounds* bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:CLLocationCoordinate2DMake(maxLat, maxLong)
+                                                                               coordinate:CLLocationCoordinate2DMake(minLat, minLong)];
+            [mapView animateWithCameraUpdate:[GMSCameraUpdate fitBounds:bounds]];
+        });
+    }
 }
 
 @end
