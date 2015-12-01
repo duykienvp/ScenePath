@@ -9,6 +9,7 @@
 #import "KDNRouteViewController.h"
 #import "KDNConstants.h"
 #import "KDNPreferenceManager.h"
+#import "KDNUtility.h"
 @import GoogleMaps;
 
 @interface KDNRouteViewController ()
@@ -19,7 +20,9 @@
 @property (weak, nonatomic) IBOutlet UIButton *searchButton;
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 @property (weak, nonatomic) IBOutlet UISwitch *googlePathSwitch;
-@property (weak, nonatomic) IBOutlet UISwitch *shortestPathSwitch;
+@property (weak, nonatomic) IBOutlet UILabel *budgetLabel;
+
+@property (weak, nonatomic) IBOutlet UISlider *budgetSlider;
 
 @property (strong, nonatomic) KDNSearchResultsTableViewController* searchResultsTableViewController;
 
@@ -34,8 +37,6 @@
     [super viewDidLoad];
 //    NSLog(@"LOAD");
     // Do any additional setup after loading the view.
-    [KDNPreferenceManager setBudget:10000000];
-    
     [self.fromTextField addTarget:self action:@selector(fromTextFieldClicked) forControlEvents:UIControlEventEditingDidBegin];
     [self.toTextField addTarget:self action:@selector(toTextFieldClicked) forControlEvents:UIControlEventEditingDidBegin];
     
@@ -66,6 +67,10 @@
 //    NSLog(@"Load toLocation: %@", [self.toLocation description]);
     
     [self setTextFieldInitialValues];
+    
+    int budget = [KDNUtility cmTokm:[KDNPreferenceManager getBudget]];
+    self.budgetLabel.text = [NSString stringWithFormat:@"%d", budget];
+    self.budgetSlider.value = budget;
 }
 
 -(void)setTextFieldInitialValues {
@@ -189,6 +194,14 @@
 }
 - (IBAction)savePreviousSearchChanged:(id)sender {
     [KDNPreferenceManager setShouldSavePreviousSearch:self.savePreviousSearchSwitch.on];
+}
+
+- (IBAction)budgetSliderChanged:(UISlider*)sender {
+    int budget = sender.value;
+    sender.value = budget;
+    self.budgetLabel.text = [NSString stringWithFormat:@"%d", budget];
+    
+    [KDNPreferenceManager setBudget:[KDNUtility kmToCm:budget]];
 }
 
 //NOT CALL NOW

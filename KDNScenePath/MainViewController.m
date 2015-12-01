@@ -17,6 +17,7 @@
 #import "KDNUtility.h"
 #import "KDNLatLng.h"
 #import "KDNImageUploadViewController.h"
+#import "UIView+Toast.h"
 @import GoogleMaps;
 
 @interface MainViewController ()
@@ -129,10 +130,10 @@
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"routeSegueIdentifier"]) {
+    if ([segue.identifier isEqualToString:kRouteSegueIdentifier]) {
         KDNRouteViewController* routeViewController = (KDNRouteViewController*)[segue destinationViewController];
         routeViewController.delegate = self;
-    } else if ([segue.identifier isEqualToString:@"mainToImageUploadSegueIdentifier"]) {
+    } else if ([segue.identifier isEqualToString:kMainToImageUploadSegueIdentifier]) {
         KDNImageUploadViewController* imageUploadViewController = (KDNImageUploadViewController*)[segue destinationViewController];
         imageUploadViewController.image = self.imageToUpload;
     }
@@ -166,11 +167,8 @@
         [self updateMapMarkers];
         [self updateMapCamera];
     }
-//    if (self.isScenic) {
-//        [self routeScenic];
-//    } else {
-//        [self routeGoogleMaps];
-//    }
+    
+    self.shouldRoute = NO;
 }
 
 -(void)routeScenic {
@@ -225,12 +223,26 @@
 
 -(void)receivedScenicPathSucceeded:(NSNotification*)notification {
     NSLog(@"<%@:%@:%d>: Scenic OK", NSStringFromClass([self class]), NSStringFromSelector(_cmd), __LINE__);
-    GMSPath* path = [KDNGoogleMapsUtility constructPathFromPoints:[[notification userInfo] objectForKey:kScenicePathReceivedPathKey]];
-    [self drawPathFromPath:path color:[KDNUtility getScenicPathColor]];
+    NSArray * points = [[notification userInfo] objectForKey:kScenicePathReceivedPathKey];
+    if (points.count == 0) {
+        [self showToastMessage:kFailedToFindScenicPathMessage];
+    } else {
+        GMSPath* path = [KDNGoogleMapsUtility constructPathFromPoints:points];
+        [self drawPathFromPath:path color:[KDNUtility getScenicPathColor]];
+    }
 }
 
 -(void)receivedScenicPathFailed:(NSNotification*)notification {
-    NSLog(@"Failed to get scenic path");
+    [self showToastMessage:kFailedToGetScenicPathMessage];
+//    NSLog(@"Failed to get scenic path");
+}
+
+-(void)showToastMessage:(NSString*) message {
+    __weak MainViewController* weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(),^{
+//        [weakSelf.view makeToast:message];
+        [weakSelf.view makeToast:message duration:kFailedToFindOrGetScenicPathToastDuration position:CSToastPositionCenter];
+    });
 }
 
 
@@ -348,14 +360,7 @@
 {
     [self dismissViewControllerAnimated:YES completion:nil];
     self.imageToUpload = [info objectForKey:UIImagePickerControllerOriginalImage];
-    [self performSegueWithIdentifier:@"mainToImageUploadSegueIdentifier" sender:self];
-//    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
-//    NSLog(@"%@", UIImageJPEGRepresentation(image, 1.0));
-//    
-//    //show image upload
-//    KDNImageUploadViewController* imageUploadViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"imageUploadViewController"];
-//    [imageUploadViewController.imageView setImage:image];
-//    [self presentViewController:imageUploadViewController animated:YES completion:nil];
+    [self performSegueWithIdentifier:kMainToImageUploadSegueIdentifier sender:self];
 }
 
 

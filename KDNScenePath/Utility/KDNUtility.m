@@ -22,4 +22,12 @@
     return [UIColor redColor];
 }
 
++(int)kmToCm:(int)length {
+    return length * 1000 * 100;
+}
+
++(int)cmTokm:(int)length {
+    return length / 100000;
+}
+
 @end

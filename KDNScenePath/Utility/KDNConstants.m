@@ -14,6 +14,9 @@ int const kDefaultBudget = 1000000; //in cm
 
 NSString * const kEmptyString = @"";
 
+NSString * const kRouteSegueIdentifier = @"routeSegueIdentifier";
+NSString * const kMainToImageUploadSegueIdentifier = @"mainToImageUploadSegueIdentifier";
+
 NSString * const kSearchResultTableViewCellIdentifier = @"SearchResultTableViewCellIdentifier";
 NSString * const kSearchButtonWithoutScenicPath = @"Search shortest";
 NSString * const kSearchButtonWithScenicPath = @"Search nicest";
@@ -48,4 +51,8 @@ NSString* const kImageUploadUrl = @"http://ec2-52-26-11-135.us-west-2.compute.am
 NSString* const kImageUploadUploadTitle = @"Upload";
 NSString* const kImageUploadUploadingTitle = @"Uploading...";
 NSString* const kImageUploadDoneTitle = @"Done";
+
+NSString* const kFailedToFindScenicPathMessage = @"Failed to find scenic path";
+NSString* const kFailedToGetScenicPathMessage = @"Failed to get scenic path";
+double const kFailedToFindOrGetScenicPathToastDuration = 3.0;
 @end

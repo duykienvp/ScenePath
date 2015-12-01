@@ -19,6 +19,9 @@ extern int const kDefaultBudget;
 
 extern NSString * const kEmptyString;
 
+extern NSString * const kRouteSegueIdentifier;
+extern NSString * const kMainToImageUploadSegueIdentifier;
+
 extern NSString * const kSearchResultTableViewCellIdentifier;
 extern NSString * const kSearchButtonWithoutScenicPath;
 extern NSString * const kSearchButtonWithScenicPath;
@@ -53,5 +56,9 @@ extern NSString* const kImageUploadUrl;
 extern NSString* const kImageUploadUploadTitle;
 extern NSString* const kImageUploadUploadingTitle;
 extern NSString* const kImageUploadDoneTitle;
+
+extern NSString* const kFailedToFindScenicPathMessage;
+extern NSString* const kFailedToGetScenicPathMessage;
+extern double const kFailedToFindOrGetScenicPathToastDuration;
 
 @end

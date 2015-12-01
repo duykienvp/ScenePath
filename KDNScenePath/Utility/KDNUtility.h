@@ -17,4 +17,8 @@
 
 +(UIColor*)getShorestPathColor;
 
++(int)kmToCm:(int)length;
+
++(int)cmTokm:(int)length;
+
 @end

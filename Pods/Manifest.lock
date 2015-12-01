@@ -21,13 +21,16 @@ PODS:
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - GoogleMaps (1.10.5)
+  - Toast (3.0)
 
 DEPENDENCIES:
   - AFNetworking
   - GoogleMaps
+  - Toast
 
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
   GoogleMaps: da51c62c338c2d9c47cdad470a0d1e0e4b8544e4
+  Toast: 32c59229abfcf41850162b83bb9259dc84372473
 
 COCOAPODS: 0.39.0
