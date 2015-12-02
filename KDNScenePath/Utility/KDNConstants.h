@@ -12,7 +12,8 @@
 @interface KDNConstants : NSObject
 typedef NS_ENUM(NSInteger, KDNMyGoogleMapsPathType) {
     KDNMyGoogleMapsPathTypeGoogle,
-    KDNMyGoogleMapsPathTypeScenic
+    KDNMyGoogleMapsPathTypeScenicStartNode,
+    KDNMyGoogleMapsPathTypeScenicEndNode
 };
 
 extern int const kDefaultBudget;

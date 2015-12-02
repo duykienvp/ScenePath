@@ -30,6 +30,10 @@
 
 @property (strong, nonatomic) UIImage* imageToUpload;
 
+@property (strong, nonatomic) GMSPath* fromLocationToStartNodePath;
+@property (strong, nonatomic) GMSPath* middleScenicPath;
+@property (strong, nonatomic) GMSPath* endNodeToToLocationPath;
+
 @end
 
 @implementation MainViewController {
@@ -44,6 +48,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.fromLocationToStartNodePath = nil;
+    self.middleScenicPath = nil;
+    self.endNodeToToLocationPath = nil;
     
     self.shouldRoute = NO;
     
@@ -205,10 +213,10 @@
         //get Goolge's path from fromLocation to startNode, and from endNode to toLocation
         [KDNGoogleMapsHelper getEncodedGmsPathFrom:self.fromLocation
                                                 to:startNodeLocation
-                                          pathType:KDNMyGoogleMapsPathTypeScenic];
+                                          pathType:KDNMyGoogleMapsPathTypeScenicStartNode];
         [KDNGoogleMapsHelper getEncodedGmsPathFrom:endNodeLocation
                                                 to:self.toLocation
-                                          pathType:KDNMyGoogleMapsPathTypeScenic];
+                                          pathType:KDNMyGoogleMapsPathTypeScenicEndNode];
         //get Scenic path from startNode to endNode
         int budget = [KDNPreferenceManager getBudget];
         if (budget == 0) {
@@ -228,7 +236,8 @@
         [self showToastMessage:kFailedToFindScenicPathMessage];
     } else {
         GMSPath* path = [KDNGoogleMapsUtility constructPathFromPoints:points];
-        [self drawPathFromPath:path color:[KDNUtility getScenicPathColor]];
+        self.middleScenicPath = path;
+        [self checkDrawScenicPath];
     }
 }
 
@@ -264,9 +273,32 @@
     if (pathType == KDNMyGoogleMapsPathTypeGoogle) {
         [self drawPathFromEncodedPath:encodedGmsPath
                      color:[KDNUtility getGooglePathColor]];
-    } else if (pathType == KDNMyGoogleMapsPathTypeScenic) {
-        [self drawPathFromEncodedPath:encodedGmsPath
-                     color:[KDNUtility getScenicPathColor]];
+    } else if (pathType == KDNMyGoogleMapsPathTypeScenicStartNode) {
+        GMSPath* path = [GMSPath pathFromEncodedPath:encodedGmsPath];
+        self.fromLocationToStartNodePath = path;
+        [self checkDrawScenicPath];
+    } else if (pathType == KDNMyGoogleMapsPathTypeScenicEndNode) {
+        GMSPath* path = [GMSPath pathFromEncodedPath:encodedGmsPath];
+        self.endNodeToToLocationPath = path;
+        [self checkDrawScenicPath];
+    }
+}
+
+/// Check if we have all the paths needed to draw the whole scenic path
+-(void)checkDrawScenicPath {
+    if (self.fromLocationToStartNodePath != nil
+        && self.middleScenicPath != nil
+        && self.endNodeToToLocationPath != nil) {
+        
+        //if we have all, draw it
+        [self drawPathFromPath:self.fromLocationToStartNodePath color:[KDNUtility getScenicPathColor]];
+        [self drawPathFromPath:self.middleScenicPath color:[KDNUtility getScenicPathColor]];
+        [self drawPathFromPath:self.endNodeToToLocationPath color:[KDNUtility getScenicPathColor]];
+        
+        //and remove them
+        self.fromLocationToStartNodePath = nil;
+        self.middleScenicPath = nil;
+        self.endNodeToToLocationPath = nil;
     }
 }
 
